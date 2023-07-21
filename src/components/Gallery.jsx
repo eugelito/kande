@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image } from "cloudinary-react";
 import axios from "axios";
 
-const Gallery = ({ images }) => {
+const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [fullScreenImageIndex, setFullScreenImageIndex] = useState(null);
@@ -14,7 +14,7 @@ const Gallery = ({ images }) => {
         const response = await axios.get(
           `https://res.cloudinary.com/${cloudName}/image/list/wedding.json`
         );
-        setGalleryImages([...images, ...response.data.resources]);
+        setGalleryImages(response.data.resources);
         console.log(response.data.resources);
       } catch (error) {
         console.error("Error fetching images:", error);
@@ -32,7 +32,7 @@ const Gallery = ({ images }) => {
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        {images.map((imageUrl, index) => (
+        {/* {images.map((imageUrl, index) => (
           <div
             key={index}
             className={`${
@@ -53,7 +53,7 @@ const Gallery = ({ images }) => {
               loading="lazy"
             />
           </div>
-        ))}
+        ))} */}
         {galleryImages.map((galleryImage, index) => (
           <div
             key={index}

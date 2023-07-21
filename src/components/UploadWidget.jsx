@@ -78,8 +78,9 @@ const UploadWidget = () => {
         <div className="flex flex-wrap items-center justify-center w-full mb-4">
           {uploadSuccess && (
             <div className="bg-green-500 text-green font-bold py-2 px-4 rounded mb-4">
-              Image uploaded successfully! It may take a moment to appear in the
-              gallery below, please refresh the page.
+              Image(s) uploaded successfully! It may take a moment to appear in
+              the gallery below. Please refresh the page after a minute if it
+              hasn't appeared yet.
             </div>
           )}
           {!isUserAuthenticated && showLogin ? (
