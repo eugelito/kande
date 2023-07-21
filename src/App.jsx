@@ -2,14 +2,15 @@ import { useRef } from "react";
 import "./App.css";
 import IntroHeader from "./components/IntroHeader";
 import UploadWidget from "./components/UploadWidget";
-import Gallery from "./components/Gallery";
 import Footer from "./components/Footer";
 
 const App = () => {
   return (
     <div className="max-w-2xl">
-      <IntroHeader />
-      <UploadWidget />
+      <div className="bg-white">
+        <IntroHeader />
+        <UploadWidget />
+      </div>
       {/* <Gallery /> */}
       <Footer />
     </div>

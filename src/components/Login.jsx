@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-const Login = ({ uploadWidget }) => {
+const Login = forwardRef(({ uploadWidget }, inputRef) => {
   const [passcode, setPasscode] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  const login = ({ e, uploadWidget }) => {
+  const login = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(
       auth,
       "eugelito@outlook.com",
       passcode.toLowerCase()
     )
-      .then((passcode) => {
-        console.log(passcode);
+      .then(() => {
         setShowErrorMessage(false);
         uploadWidget.open();
       })
@@ -25,7 +24,7 @@ const Login = ({ uploadWidget }) => {
   };
 
   return (
-    <form className="w-full max-w-xs pb-8">
+    <form className="w-full max-w-xs pb-8" ref={inputRef}>
       <label
         className="block text-gray-700 text-sm font-bold mb-2"
         htmlFor="passcode"
@@ -53,7 +52,7 @@ const Login = ({ uploadWidget }) => {
         <button
           className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold py-2 px-4 mt-3 rounded focus:outline-none focus:shadow-outline "
           type="submit"
-          onClick={(e) => login({ e, uploadWidget })}
+          onClick={login}
         >
           <svg
             className="w-[18px] h-[18px] text-white mr-2 inline-flex"
@@ -75,6 +74,6 @@ const Login = ({ uploadWidget }) => {
       </div>
     </form>
   );
-};
+});
 
 export default Login;

@@ -7,9 +7,11 @@ import Gallery from "./Gallery";
 const UploadWidget = () => {
   const cloudinaryRef = useRef();
   const widgetRef = useRef();
+  const inputPasscodeRef = useRef(null);
   const [uploadWidget, setUploadWidget] = useState(null);
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -29,6 +31,7 @@ const UploadWidget = () => {
         cloudName: "dkpqtkm74",
         uploadPreset: "mngtywa2",
         sources: ["local"],
+        tags: ["wedding"],
         folder: "wedding",
         styles: {
           palette: {
@@ -52,6 +55,7 @@ const UploadWidget = () => {
         if (!error && result && result.event === "success") {
           console.log("Done! Here is the image info: ", result.info);
           setImages((prev) => [...prev, { url: result.info.secure_url }]);
+          setUploadSuccess(true);
         }
       }
     );
@@ -64,6 +68,7 @@ const UploadWidget = () => {
       setShowLogin(false);
     } else {
       setShowLogin(true);
+      inputPasscodeRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -71,11 +76,17 @@ const UploadWidget = () => {
     <>
       <div className="mb-6">
         <div className="flex flex-wrap items-center justify-center w-full mb-4">
+          {uploadSuccess && (
+            <div className="bg-green-500 text-green font-bold py-2 px-4 rounded mb-4">
+              Image uploaded successfully! It may take a moment to appear in the
+              gallery below, please refresh the page.
+            </div>
+          )}
           {!isUserAuthenticated && showLogin ? (
-            <Login uploadWidget={uploadWidget} />
+            <Login uploadWidget={uploadWidget} inputRef={inputPasscodeRef} />
           ) : (
             <button
-              className="bg-[#869380] text-white font-bold py-2 px-4 rounded inline-flex items-center hover:bg-[#d2adad]"
+              className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-4"
               onClick={handleUploadClick}
             >
               <svg
@@ -89,11 +100,10 @@ const UploadWidget = () => {
                 <path d="M0 0h24v24H0z" fill="none" />
                 <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
               </svg>
-              <span>Upload image or video</span>
+              <span>Upload image</span>
             </button>
           )}
         </div>
-        <hr className="mb-4 text-gray-100 opacity-90" />
         <Gallery images={images} />
       </div>
     </>

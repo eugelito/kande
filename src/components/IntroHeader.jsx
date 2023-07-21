@@ -12,7 +12,7 @@ const IntroHeader = () => {
           src={honeymoonImage}
         ></img>
       </div>
-      <p className="max-w-2xl mb-6 bg-white	p-4 rounded-2xl">
+      <p className="max-w-2xl p-4 rounded-2xl">
         To our cherished family and friends, your presence and support on our
         wedding day filled our hearts with love and joy.{" "}
         <b>Please share your captured moments on this website</b>, so everyone
