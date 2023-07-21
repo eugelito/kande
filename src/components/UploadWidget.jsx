@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import axios from "axios";
 import { auth } from "../firebase";
 import Login from "./Login";
+import Gallery from "./Gallery";
 
 const UploadWidget = () => {
   const cloudinaryRef = useRef();
@@ -11,8 +11,6 @@ const UploadWidget = () => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [images, setImages] = useState([]);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [fullScreenImageIndex, setFullScreenImageIndex] = useState(null);
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
@@ -60,22 +58,6 @@ const UploadWidget = () => {
     setUploadWidget(widgetRef.current);
   }, []);
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3001/cloudinary/images"
-        );
-        setImages(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      }
-    };
-
-    fetchImages();
-  }, []);
-
   const handleUploadClick = () => {
     if (isUserAuthenticated) {
       widgetRef.current.open();
@@ -83,11 +65,6 @@ const UploadWidget = () => {
     } else {
       setShowLogin(true);
     }
-  };
-
-  const handleImageClick = (index) => {
-    setFullScreenImageIndex(index);
-    setIsFullScreen(!isFullScreen);
   };
 
   return (
@@ -117,30 +94,7 @@ const UploadWidget = () => {
           )}
         </div>
         <hr className="mb-4 text-gray-100 opacity-90" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          {images.map((imageUrl, index) => (
-            <div
-              key={index}
-              className={`${
-                fullScreenImageIndex === index && isFullScreen
-                  ? "fullscreen-overlay"
-                  : ""
-              }`}
-              onClick={() => handleImageClick(index)}
-            >
-              <img
-                className={`${
-                  fullScreenImageIndex === index && isFullScreen
-                    ? "fullscreen-image"
-                    : "h-auto max-w-full rounded-lg hover:cursor-pointer"
-                }`}
-                src={imageUrl.url}
-                alt={`Image ${index}`}
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
+        <Gallery images={images} />
       </div>
     </>
   );
