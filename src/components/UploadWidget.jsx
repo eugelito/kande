@@ -88,7 +88,7 @@ const UploadWidget = () => {
             <Login uploadWidget={uploadWidget} inputRef={inputPasscodeRef} />
           ) : (
             <button
-              className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-8"
+              className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold pl-8 pr-8 py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-8"
               onClick={handleUploadClick}
             >
               <svg

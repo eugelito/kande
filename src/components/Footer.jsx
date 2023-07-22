@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="text-center mt-4">
+    <footer className="text-center mt-12">
       Made with <span className="text-blush ">&#9829;</span> by{" "}
       <a
         href="https://eugelito.com/"
