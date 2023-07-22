@@ -7,10 +7,8 @@ import Footer from "./components/Footer";
 const App = () => {
   return (
     <div className="max-w-2xl">
-      <div className="bg-white">
-        <IntroHeader />
-        <UploadWidget />
-      </div>
+      <IntroHeader />
+      <UploadWidget />
       {/* <Gallery /> */}
       <Footer />
     </div>

@@ -2,7 +2,7 @@ import honeymoonImage from "/honeymoon.jpeg";
 
 const IntroHeader = () => {
   return (
-    <div className="intro-header">
+    <div className="intro-header bg-white">
       <div className="text-center mb-4 flex flex-col items-center">
         <b className="text-xl text-blush mt-4">We're married!</b>
         <h1 className="text-green">Karen & Eugelito</h1>

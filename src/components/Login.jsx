@@ -45,7 +45,14 @@ const Login = forwardRef(({ uploadWidget }, inputRef) => {
       />
       {showErrorMessage && (
         <p className="mt-2 text-xs text-red-400">
-          <b>Oops!</b> You have entered an incorrect passcode. Try again.
+          <b>Oops!</b> You have entered an incorrect passcode. Try again or
+          contact{" "}
+          <a
+            href="mailto:eugelito@outlook.com?subject=karenandeuge.co.uk"
+            className="underline text-green hover:text-blush"
+          >
+            eugelito@outlook.com
+          </a>
         </p>
       )}
       <div className="flex items-end justify-between">

@@ -33,6 +33,7 @@ const UploadWidget = () => {
         sources: ["local"],
         tags: ["wedding"],
         folder: "wedding",
+        resourceType: "image",
         styles: {
           palette: {
             window: "#FFF",
@@ -75,19 +76,19 @@ const UploadWidget = () => {
   return (
     <>
       <div className="mb-6">
-        <div className="flex flex-wrap items-center justify-center w-full mb-4">
+        <div className="bg-white flex flex-wrap items-center justify-center w-full mb-4">
           {uploadSuccess && (
             <div className="bg-green-500 text-green font-bold py-2 px-4 rounded mb-4">
               Image(s) uploaded successfully! It may take a moment to appear in
               the gallery below. Please refresh the page after a minute if it
-              hasn't appeared yet.
+              hasn't appeared.
             </div>
           )}
           {!isUserAuthenticated && showLogin ? (
             <Login uploadWidget={uploadWidget} inputRef={inputPasscodeRef} />
           ) : (
             <button
-              className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-4"
+              className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-8"
               onClick={handleUploadClick}
             >
               <svg

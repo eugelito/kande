@@ -31,8 +31,7 @@ a:hover {
 }
 
 body {
-  background-image: url("../public/backgroundImage.png"),
-    url("../public/floralRight.png");
+  background-image: url("/backgroundImage.png"), url("/floralRight.png");
   background-position: top left, bottom right;
   background-repeat: no-repeat;
   margin: 0;
