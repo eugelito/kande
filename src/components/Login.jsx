@@ -24,7 +24,7 @@ const Login = forwardRef(({ uploadWidget }, inputRef) => {
   };
 
   return (
-    <form className="w-full max-w-xs pb-8" ref={inputRef}>
+    <form className="w-full max-w-xs pt-4 pb-4" ref={inputRef}>
       <label
         className="block text-gray-700 text-sm font-bold mb-2"
         htmlFor="passcode"
