@@ -15,7 +15,7 @@ const Gallery = () => {
     const fetchImages = async () => {
       try {
         const response = await axios.get(
-          `https://res.cloudinary.com/${cloudName}/image/list/wedding.json`
+          `https://res.cloudinary.com/${cloudName}/image/list/wedding.json?${Date.now()}`
         );
         setGalleryImages(response.data.resources);
         console.log(response.data.resources);
