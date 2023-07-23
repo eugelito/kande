@@ -69,7 +69,7 @@ const UploadWidget = () => {
       setShowLogin(false);
     } else {
       setShowLogin(true);
-      inputPasscodeRef.current?.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo(0, 700);
     }
   };
 
@@ -101,7 +101,7 @@ const UploadWidget = () => {
             </div>
           )}
           {!isUserAuthenticated && showLogin ? (
-            <Login uploadWidget={uploadWidget} inputRef={inputPasscodeRef} />
+            <Login uploadWidget={uploadWidget} />
           ) : (
             <button
               className="bg-[#869380] hover:bg-[#d2adad] text-white font-bold pl-8 pr-8 py-2 px-4 rounded inline-flex items-center fixed bottom-0 mb-8"
