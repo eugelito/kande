@@ -108,7 +108,7 @@ const Gallery = () => {
               className={`${
                 fullScreenImageIndex === index && isFullScreen
                   ? "fullscreen-image"
-                  : "h-auto max-w-full rounded-lg hover:cursor-pointer"
+                  : "object-cover w-full h-full max-w-full rounded-lg hover:cursor-pointer"
               }`}
               loading="lazy"
             />
