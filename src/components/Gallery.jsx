@@ -75,9 +75,9 @@ const Gallery = () => {
       const touchEndX = e.touches[0].clientX;
       const touchDelta = touchStartX.current - touchEndX;
 
-      if (touchDelta > 100) {
+      if (touchDelta > 400) {
         showNextImage();
-      } else if (touchDelta < -100) {
+      } else if (touchDelta < -400) {
         showPreviousImage();
       }
     }
