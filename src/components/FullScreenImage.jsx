@@ -12,7 +12,7 @@ const FullScreenImage = ({
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black">
       <div className="relative w-full h-full flex items-center justify-center">
         <button
-          className="absolute top-1/2 left-4 -translate-y-1/2 z-50 text-white text-4xl font-bold bg-transparent border-none focus:outline-none"
+          className="absolute top-1/2 left-0 -translate-y-1/2 z-50 text-white text-4xl font-bold bg-transparent border-none focus:outline-none"
           onClick={onShowPrevious}
         >
           &#8249;
@@ -25,14 +25,14 @@ const FullScreenImage = ({
           loading="lazy"
         />
         <button
-          className="absolute top-1/2 right-4 -translate-y-1/2 z-50 text-white text-4xl font-bold bg-transparent border-none focus:outline-none"
+          className="absolute top-1/2 right-0 -translate-y-1/2 z-50 text-white text-4xl font-bold bg-transparent border-none focus:outline-none"
           onClick={onShowNext}
         >
           &#8250;
         </button>
       </div>
       <button
-        className="absolute top-4 right-12 z-50 text-white text-xl font-bold"
+        className="absolute top-4 right-4 z-50 text-white text-xl font-bold"
         onClick={onClose}
       >
         X

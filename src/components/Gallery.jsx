@@ -95,16 +95,15 @@ const Gallery = () => {
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
-
   const handleTouchMove = (e) => {
     if (isFullScreen) {
       const touchEndX = e.touches[0].clientX;
-      const touchDelta = touchStartX.current - touchEndX;
+      const touchDelta = touchEndX - touchStartX.current;
 
-      if (touchDelta > 400) {
-        showNextImage();
-      } else if (touchDelta < -400) {
+      if (touchDelta > 100) {
         showPreviousImage();
+      } else if (touchDelta < -100) {
+        showNextImage();
       }
     }
   };
@@ -116,6 +115,9 @@ const Gallery = () => {
         className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={() => {
+          touchStartX.current = null;
+        }}
       >
         {galleryImages.map((galleryImage, index) => (
           <div key={index} onClick={() => handleImageClick(index)}>
