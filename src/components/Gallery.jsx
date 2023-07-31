@@ -29,12 +29,22 @@ const Gallery = () => {
 
   const handleImageClick = (index) => {
     setFullScreenImageIndex(index);
-    setIsFullScreen(!isFullScreen);
+    setIsFullScreen(true);
+  };
+
+  const handleCloseFullScreen = () => {
+    setIsFullScreen(false);
+    setFullScreenImageIndex(null);
   };
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (isFullScreen) {
+    const handleKeyPress = (event) => {
+      if (
+        isFullScreen &&
+        (event.key === "ArrowLeft" || event.key === "ArrowRight")
+      ) {
+        event.stopPropagation();
+        event.preventDefault();
         if (event.key === "ArrowLeft") {
           showPreviousImage();
         } else if (event.key === "ArrowRight") {
@@ -43,12 +53,28 @@ const Gallery = () => {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyPress);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isFullScreen]);
+  }, [isFullScreen, fullScreenImageIndex]);
+
+  const handleShowPrevious = () => {
+    if (fullScreenImageIndex > 0) {
+      setFullScreenImageIndex(fullScreenImageIndex - 1);
+    } else {
+      setFullScreenImageIndex(galleryImages.length - 1);
+    }
+  };
+
+  const handleShowNext = () => {
+    if (fullScreenImageIndex < galleryImages.length - 1) {
+      setFullScreenImageIndex(fullScreenImageIndex + 1);
+    } else {
+      setFullScreenImageIndex(0);
+    }
+  };
 
   const showPreviousImage = () => {
     if (fullScreenImageIndex > 0) {
@@ -92,15 +118,7 @@ const Gallery = () => {
         onTouchMove={handleTouchMove}
       >
         {galleryImages.map((galleryImage, index) => (
-          <div
-            key={index}
-            className={`${
-              fullScreenImageIndex === index && isFullScreen
-                ? "fullscreen-overlay"
-                : ""
-            }`}
-            onClick={() => handleImageClick(index)}
-          >
+          <div key={index} onClick={() => handleImageClick(index)}>
             <Image
               key={galleryImage.public_id}
               cloudName={cloudName}
@@ -119,6 +137,9 @@ const Gallery = () => {
         <FullScreenImage
           galleryImage={galleryImages[fullScreenImageIndex]}
           cloudName={cloudName}
+          onClose={handleCloseFullScreen}
+          onShowPrevious={handleShowPrevious}
+          onShowNext={handleShowNext}
         />
       )}
     </>
