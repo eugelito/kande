@@ -1,5 +1,5 @@
 import React from "react";
-import { Image } from "cloudinary-react";
+import { Image, Transformation } from "cloudinary-react";
 
 const FullScreenImage = ({
   galleryImage,
@@ -20,10 +20,19 @@ const FullScreenImage = ({
         <Image
           cloudName={cloudName}
           publicId={galleryImage.public_id}
-          version={new Date().getTime()}
+          version={galleryImage.version}
           className="h-auto max-w-full max-h-full"
-          loading="lazy"
-        />
+          loading="eager"
+          decoding="async"
+          alt=""
+        >
+          <Transformation
+            fetchFormat="auto"
+            quality="auto"
+            crop="limit"
+            width="1920"
+          />
+        </Image>
         <button
           className="absolute top-1/2 right-0 -translate-y-1/2 z-50 text-white text-4xl font-bold bg-transparent border-none focus:outline-none"
           onClick={onShowNext}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import Login from "./Login";
@@ -12,7 +12,13 @@ const UploadWidget = () => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [images, setImages] = useState([]);
+  const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
+  const [optimisticUploads, setOptimisticUploads] = useState([]);
+
+  const handleGalleryListSynced = useCallback((resources) => {
+    const ids = new Set(resources.map((r) => r.public_id));
+    setOptimisticUploads((prev) => prev.filter((p) => !ids.has(p.public_id)));
+  }, []);
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
@@ -54,8 +60,12 @@ const UploadWidget = () => {
       },
       function (error, result) {
         if (!error && result && result.event === "success") {
-          console.log("Done! Here is the image info: ", result.info);
-          setImages((prev) => [...prev, { url: result.info.secure_url }]);
+          const info = result.info;
+          setOptimisticUploads((prev) => [
+            ...prev,
+            { public_id: info.public_id, version: info.version },
+          ]);
+          setGalleryRefreshKey((k) => k + 1);
           setUploadSuccess(true);
         }
       }
@@ -93,9 +103,8 @@ const UploadWidget = () => {
                   </svg>
                 </div>
                 <div>
-                  <b>Image(s) uploaded successfully! </b> It may take a moment
-                  to appear in the gallery below. Please <b>refresh the page</b>{" "}
-                  after a minute if it hasn't appeared.
+                  <b>Image(s) uploaded successfully! </b> New photos should
+                  appear in the gallery below automatically.
                 </div>
               </div>
             </div>
@@ -122,7 +131,11 @@ const UploadWidget = () => {
             </button>
           )}
         </div>
-        <Gallery images={images} />
+        <Gallery
+          refreshKey={galleryRefreshKey}
+          optimisticUploads={optimisticUploads}
+          onListSynced={handleGalleryListSynced}
+        />
       </div>
     </>
   );

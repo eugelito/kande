@@ -1,31 +1,71 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Image } from "cloudinary-react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import { Image, Transformation } from "cloudinary-react";
 import axios from "axios";
 import FullScreenImage from "./FullScreenImage";
 
-const Gallery = () => {
+function mergeServerAndOptimistic(server, optimistic) {
+  const ids = new Set(server.map((r) => r.public_id));
+  const extra = optimistic.filter(
+    (r) => r && r.public_id && !ids.has(r.public_id)
+  );
+  return [...server, ...extra];
+}
+
+const Gallery = ({
+  refreshKey = 0,
+  optimisticUploads = [],
+  onListSynced,
+}) => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [fullScreenImageIndex, setFullScreenImageIndex] = useState(null);
   const cloudName = import.meta.env.VITE_CLOUDINARYCLOUDNAME;
   const containerRef = useRef(null);
   const touchStartX = useRef(null);
+  const onListSyncedRef = useRef(onListSynced);
+  onListSyncedRef.current = onListSynced;
+
+  const displayImages = useMemo(
+    () => mergeServerAndOptimistic(galleryImages, optimisticUploads),
+    [galleryImages, optimisticUploads]
+  );
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
+        const cacheBust =
+          refreshKey > 0 ? `?cb=${refreshKey}` : "";
         const response = await axios.get(
-          `https://res.cloudinary.com/${cloudName}/image/list/wedding.json?${Date.now()}`
+          `https://res.cloudinary.com/${cloudName}/image/list/wedding.json${cacheBust}`
         );
-        setGalleryImages(response.data.resources);
-        console.log(response.data.resources);
+        const resources = response.data.resources ?? [];
+        setGalleryImages(resources);
+        onListSyncedRef.current?.(resources);
       } catch (error) {
         console.error("Error fetching images:", error);
       }
     };
 
     fetchImages();
-  }, []);
+  }, [cloudName, refreshKey]);
+
+  useEffect(() => {
+    if (refreshKey === 0) return;
+    const t = window.setTimeout(() => {
+      const cacheBust = `?cb=${refreshKey}r${Date.now()}`;
+      axios
+        .get(
+          `https://res.cloudinary.com/${cloudName}/image/list/wedding.json${cacheBust}`
+        )
+        .then((response) => {
+          const resources = response.data.resources ?? [];
+          setGalleryImages(resources);
+          onListSyncedRef.current?.(resources);
+        })
+        .catch(() => {});
+    }, 3000);
+    return () => window.clearTimeout(t);
+  }, [cloudName, refreshKey]);
 
   const handleImageClick = (index) => {
     setFullScreenImageIndex(index);
@@ -58,18 +98,18 @@ const Gallery = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isFullScreen, fullScreenImageIndex]);
+  }, [isFullScreen, fullScreenImageIndex, displayImages.length]);
 
   const handleShowPrevious = () => {
     if (fullScreenImageIndex > 0) {
       setFullScreenImageIndex(fullScreenImageIndex - 1);
     } else {
-      setFullScreenImageIndex(galleryImages.length - 1);
+      setFullScreenImageIndex(displayImages.length - 1);
     }
   };
 
   const handleShowNext = () => {
-    if (fullScreenImageIndex < galleryImages.length - 1) {
+    if (fullScreenImageIndex < displayImages.length - 1) {
       setFullScreenImageIndex(fullScreenImageIndex + 1);
     } else {
       setFullScreenImageIndex(0);
@@ -80,12 +120,12 @@ const Gallery = () => {
     if (fullScreenImageIndex > 0) {
       setFullScreenImageIndex(fullScreenImageIndex - 1);
     } else {
-      setFullScreenImageIndex(galleryImages.length - 1);
+      setFullScreenImageIndex(displayImages.length - 1);
     }
   };
 
   const showNextImage = () => {
-    if (fullScreenImageIndex < galleryImages.length - 1) {
+    if (fullScreenImageIndex < displayImages.length - 1) {
       setFullScreenImageIndex(fullScreenImageIndex + 1);
     } else {
       setFullScreenImageIndex(0);
@@ -119,25 +159,37 @@ const Gallery = () => {
           touchStartX.current = null;
         }}
       >
-        {galleryImages.map((galleryImage, index) => (
-          <div key={index} onClick={() => handleImageClick(index)}>
+        {displayImages.map((galleryImage, index) => (
+          <div key={galleryImage.public_id} onClick={() => handleImageClick(index)}>
             <Image
-              key={galleryImage.public_id}
               cloudName={cloudName}
               publicId={galleryImage.public_id}
+              version={galleryImage.version}
               className={`${
                 fullScreenImageIndex === index && isFullScreen
                   ? "fullscreen-image"
                   : "object-cover w-full h-full max-w-full rounded-lg hover:cursor-pointer"
               }`}
               loading="lazy"
-            />
+              decoding="async"
+              sizes="(max-width: 768px) 50vw, 25vw"
+              alt=""
+            >
+              <Transformation
+                fetchFormat="auto"
+                quality="auto"
+                crop="fill"
+                width="600"
+                height="600"
+                gravity="auto"
+              />
+            </Image>
           </div>
         ))}
       </div>
       {isFullScreen && fullScreenImageIndex !== null && (
         <FullScreenImage
-          galleryImage={galleryImages[fullScreenImageIndex]}
+          galleryImage={displayImages[fullScreenImageIndex]}
           cloudName={cloudName}
           onClose={handleCloseFullScreen}
           onShowPrevious={handleShowPrevious}
